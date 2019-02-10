@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace TCP
 {
-
-    
     class Program
     {
         private static CancellationTokenSource cancellation;
@@ -19,18 +17,19 @@ namespace TCP
         var listener = new TcpListener(IPAddress.IPv6Any, 10000);  
         
         listener.Start();  
-       try
-       {   
+        try
+        {   
            cancellation = new CancellationTokenSource();
            await Task.WhenAll(
                 Enumerable.Range(0, Environment.ProcessorCount)
                     .Select( _ => BeginConversation(listener.AcceptTcpClientAsync()))
             );
-            System.Console.WriteLine("Done");
-       }
+            
+        }
        finally
        {
-             
+           listener.Stop();
+           System.Console.WriteLine("Done");
        }
     }
 
